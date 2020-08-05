@@ -1,0 +1,7 @@
+name: SwearNotify
+version: ${project.version}
+main: me.vphydra.swearnotify.SwearNotify
+api-version: 1.15
+authors: [Conor]
+description: will notify staff if a user is swearing
+website: https://github.com/CRea7
