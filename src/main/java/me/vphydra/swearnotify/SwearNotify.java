@@ -1,17 +1,14 @@
 package me.vphydra.swearnotify;
 
-import net.luckperms.api.LuckPerms;
-import net.luckperms.api.event.LuckPermsEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.Server;
-import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -21,7 +18,8 @@ import java.util.Set;
 
 public final class SwearNotify extends JavaPlugin implements Listener {
 
-    Collection<String> possiibleGroups;
+    List<String> notificationSquad = new ArrayList<String>();
+    public Collection<String> possibleGroups = new ArrayList<String>();
 
     @Override
     public void onEnable() {
@@ -40,13 +38,56 @@ public final class SwearNotify extends JavaPlugin implements Listener {
     public void onPlayerJoin(PlayerJoinEvent playerJoinEvent)
     {
         Player player = playerJoinEvent.getPlayer();
-        player.sendMessage(ChatColor.GREEN + "before check");
-        boolean test = isPlayerInGroup(player, "admin");
-        player.sendMessage(String.valueOf(test));
+        boolean admin = isPlayerInGroup(player, "admin");
+        player.sendMessage(String.valueOf(admin));
+
+        possibleGroups.add("admin");
+        String group = getPlayerGroup(player, possibleGroups);
+        player.sendMessage(ChatColor.GREEN + group);
+
+        if(admin == true)
+        {
+            player.sendMessage(ChatColor.GREEN + "adding player");
+            notificationSquad.add(player.getDisplayName());
+        }
+//        else if(isPlayerInGroup(player, "Owner"))
+//        {
+//            getLogger().info("adding player to list");
+//            notificationSquad.add(player.getDisplayName());
+//        }
+//        else if(isPlayerInGroup(player, "moderator"))
+//        {
+//            getLogger().info("adding player to list");
+//            notificationSquad.add(player.getDisplayName());
+//        }
+
+//        if(notificationSquad.get(0) != null) {
+//            getLogger().info(notificationSquad.get(0));
+//        } else
+//        {
+//            getLogger().info("no admin online");
+//        }
     }
 
+    @EventHandler
+    public void onPlayerLeave(PlayerQuitEvent playerQuitEvent)
+    {
+        Player player = playerQuitEvent.getPlayer();
+        notificationSquad.remove(player.getDisplayName());
+    }
+
+    //checks if a player is in a group
     public static boolean isPlayerInGroup(Player player, String group) {
         return player.hasPermission("group." + group);
+    }
+
+    public static String getPlayerGroup(Player player, Collection<String> possibleGroups) {
+        for (String group : possibleGroups) {
+            if (player.hasPermission("group." + group)) {
+                return group;
+            }
+        }
+        return null;
     }
     
     @EventHandler
@@ -57,8 +98,8 @@ public final class SwearNotify extends JavaPlugin implements Listener {
         for (String word :words) {
             if(msg.contains(word))
             {
-                for (OfflinePlayer toon: Op) {
-                    Player target =Bukkit.getPlayer(toon.getName());
+                for (String toon: notificationSquad) {
+                    Player target =Bukkit.getPlayer(toon);
                     if(target != null) {
                         target.sendMessage(ChatColor.RED + event.getPlayer().getDisplayName() + " Has Sworn ");
                     }
