@@ -10,6 +10,10 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -19,8 +23,18 @@ public final class SwearNotify extends JavaPlugin implements Listener {
     List<String> notificationSquad = new ArrayList<String>();
     public Collection<String> possibleGroups = new ArrayList<String>();
 
+    Connection connection = null;
+    String host, database, username, password;
+    int port;
+
     @Override
     public void onEnable() {
+
+        try{
+            connect();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
 
         getServer().getPluginManager().registerEvents(this,this);
         if(!getConfig().contains("words")){
@@ -30,6 +44,21 @@ public final class SwearNotify extends JavaPlugin implements Listener {
             getConfig().set("words", words);
         }
         saveConfig();
+    }
+
+    @Override
+    public void onDisable() {
+        try {
+            if(connection != null) {
+                connection.close();
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    public void connect() throws  SQLException {
+        connection = DriverManager.getConnection(host,username,password);
     }
 
     @EventHandler
