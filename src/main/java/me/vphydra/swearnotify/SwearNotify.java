@@ -49,8 +49,6 @@ public final class SwearNotify extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(this,this);
         if(!getConfig().contains("words")){
             List<String> words = new ArrayList<String>();
-            words.add("test");
-            words.add("test2");
             getConfig().set("words", words);
         }
         saveConfig();
