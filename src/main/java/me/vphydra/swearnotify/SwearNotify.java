@@ -36,7 +36,6 @@ public final class SwearNotify extends JavaPlugin implements Listener {
     String host = "";
     String username = "";
     String password = "";
-    int port;
 
     @Override
     public void onEnable() {
@@ -125,7 +124,7 @@ public final class SwearNotify extends JavaPlugin implements Listener {
         String msg = event.getMessage();
         List<String> words = getConfig().getStringList("words");
         for (String word :words) {
-            if(msg.contains(word))
+            if(msg.toLowerCase().contains(word))
             {
                 //adds swaer to database
                 addSwear(event.getPlayer().getDisplayName(), word, msg);
