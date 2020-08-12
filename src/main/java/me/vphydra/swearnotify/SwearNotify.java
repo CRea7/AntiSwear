@@ -33,7 +33,7 @@ public final class SwearNotify extends JavaPlugin implements Listener {
     public Collection<String> possibleGroups = new ArrayList<String>();
 
     Connection connection = null;
-    String host = "";
+    String host = "jdbc:mysql://HOST:PORT/DATABASE";
     String username = "";
     String password = "";
 
@@ -90,17 +90,14 @@ public final class SwearNotify extends JavaPlugin implements Listener {
 
         if(isPlayerInGroup(player, "admin"))
         {
-            player.sendMessage(ChatColor.GREEN + "adding player admin");
             notificationSquad.add(player.getDisplayName());
         }
         else if(isPlayerInGroup(player, "Owner"))
         {
-            player.sendMessage(ChatColor.GREEN + "adding player own");
             notificationSquad.add(player.getDisplayName());
         }
         else if(isPlayerInGroup(player, "moderator"))
         {
-            player.sendMessage(ChatColor.GREEN + "adding player mod");
             notificationSquad.add(player.getDisplayName());
         }
     }
@@ -130,7 +127,7 @@ public final class SwearNotify extends JavaPlugin implements Listener {
                 for (String toon: notificationSquad) {
                     Player target =Bukkit.getPlayer(toon);
                     if(target != null) {
-                        target.sendMessage(ChatColor.RED + event.getPlayer().getDisplayName() + " Has Sworn ");
+                        target.sendMessage(ChatColor.DARK_GRAY + "["+ ChatColor.BLUE+ "Opheon" + ChatColor.GRAY  +"Alert" + ChatColor.DARK_GRAY +"] | " + ChatColor.GRAY + event.getPlayer().getDisplayName() + " Has sworn!");
                     }
                 }
             }
